@@ -159,5 +159,5 @@ student.id
 
 
 ### Почитать 
--https://node-postgres.com
--https://postgrespro.ru/
+- https://node-postgres.com
+- https://postgrespro.ru/
