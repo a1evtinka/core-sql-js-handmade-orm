@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine",
-    "start": "node a"
+    "test": "jest",
+    "start": "node init.js"
   },
   "author": "",
   "license": "ISC",
