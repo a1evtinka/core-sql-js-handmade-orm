@@ -64,10 +64,10 @@ describe("Student", function () {
         });
 
         it('has a readable update_at', function () {
-            const student = new Student({ update_at: '2015-09-30 16:46:30' });
-            expect(student.update_at).toBe('2015-09-30 16:46:30');
-            student.update_at = '2015-09-30 16:46:31';
-            expect(student.update_at).toBe('2015-09-30 16:46:30');
+            const student = new Student({ updated_at: '2015-09-30 16:46:30' });
+            expect(student.updated_at).toBe('2015-09-30 16:46:30');
+            student.updated_at = '2015-09-30 16:46:31';
+            expect(student.updated_at).toBe('2015-09-30 16:46:30');
         });
 
         it('has a readable created_at', function () {
@@ -83,7 +83,7 @@ describe("Student", function () {
             it('when there are no students in the database', async function () {
                 await pool.query('DELETE FROM students;')
 
-                const { rows } = Student.all();
+                const { rows } = await Student.all();
 
                 expect(rows.length).toBe(0);
             });
@@ -118,9 +118,9 @@ describe("Student", function () {
                     RETURNING id;
                 `);
 
-                const id = res.rows[0].id();
+                const id = res.rows[0].id;
 
-                const student = Student.find();
+                const student = await Student.find(id);
 
                 expect(student instanceof Student).toBe(true);
             });
@@ -138,11 +138,13 @@ describe("Student", function () {
 
                 expect(student.id).toBe(undefined);
 
-                student.save();
+                await student.save();
 
                 const res = await pool.query("SELECT id FROM students WHERE last_name = 'De Niro'");
 
                 const id = res.rows[0].id;
+                
+                expect(id).toBeDefined()
             });
         });
 
@@ -159,17 +161,17 @@ describe("Student", function () {
                 `);
 
                 const id = res.rows[0].id;
-                const student = Student.find(id);
+                const student = await Student.find(id);
 
                 student.gender = 'female';
-                student.name = 'Lana'
+                student.first_name = 'Lana'
 
-                student.update();
+                await student.update();
 
                 const updated = await pool.query(`SELECT * FROM students WHERE id = ${id}`);
 
-                expect(updated.rows[0].name).toBe('Lana');
-                expect(updated.rows[1].gender).toBe('female');
+                expect(updated.rows[0].first_name).toBe('Lana');
+                expect(updated.rows[0].gender).toBe('female');
             });
         });
 
